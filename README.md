@@ -1,4 +1,3 @@
-
 <p align="center">
   <img width="280" src="https://github.com/DulanHewage/vue3-msal/assets/15976939/e5d25e77-1e05-4278-97a7-c112b4a59412" alt="Vue 3 Msal Plugin Logo">
 </p>

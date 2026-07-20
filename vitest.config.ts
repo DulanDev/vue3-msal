@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitest/config'
-import { fileURLToPath } from 'node:url'
+import { defineConfig } from 'vitest/config';
+import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
   test: {
@@ -24,4 +24,4 @@ export default defineConfig({
       'vue3-msal-plugin': fileURLToPath(new URL('./src/index.ts', import.meta.url)),
     },
   },
-})
+});

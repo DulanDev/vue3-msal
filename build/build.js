@@ -17,13 +17,7 @@ await build({
   ...shared,
   bundle: false,
   minify: true,
-  entryPoints: [
-    'src/index.ts',
-    'src/types.ts',
-    'src/msal-config.ts',
-    'src/vue3-msal-plugin.ts',
-    'src/helpers.ts',
-  ],
+  entryPoints: ['src/index.ts', 'src/types.ts', 'src/msal-config.ts', 'src/vue3-msal-plugin.ts', 'src/helpers.ts'],
   outdir: 'lib',
   format: 'esm',
 });
@@ -50,8 +44,6 @@ for (const f of await readdir('lib')) {
   if (!f.endsWith('.js')) continue;
   const path = `lib/${f}`;
   const src = await readFile(path, 'utf8');
-  const rewritten = src.replace(addJsExt, (m, p1) =>
-    p1.endsWith('.js"') ? m : `${p1.slice(0, -1)}.js"`,
-  );
+  const rewritten = src.replace(addJsExt, (m, p1) => (p1.endsWith('.js"') ? m : `${p1.slice(0, -1)}.js"`));
   if (rewritten !== src) await writeFile(path, rewritten);
 }
