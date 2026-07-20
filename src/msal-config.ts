@@ -8,10 +8,5 @@ import type { Configuration } from '@azure/msal-browser';
  * @returns A new PublicClientApplication instance.
  */
 export const msalInstance = (msalConfig: Configuration) => {
-  try {
-    return new PublicClientApplication(msalConfig);
-  } catch (error) {
-    console.error('Failed to create PublicClientApplication:', error);
-    throw error;
-  }
+  return new PublicClientApplication(msalConfig);
 };

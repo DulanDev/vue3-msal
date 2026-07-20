@@ -13,6 +13,8 @@ import type { MsalContext, MsalAuthenticationResult } from './types';
 import { msalInstance } from './msal-config';
 import { msalPlugin } from './vue3-msal-plugin';
 
+export type { AccountIdentifiers, State, MsalContext, MsalAuthenticationResult, MsalPluginOptions } from './types';
+
 // Define default login request
 const loginRequest = {
   scopes: ['User.Read'],
@@ -20,26 +22,24 @@ const loginRequest = {
 
 /**
  * Provides access to the MSAL instance, user accounts, and interaction status.
- * @throws {string} If called outside the setup() function of a component or if the MSAL plugin is not installed.
+ * @throws {Error} If called outside the setup() function of a component or if the MSAL plugin is not installed.
  * @returns {MsalContext} The MSAL context.
  */
 export function useMsal(): MsalContext {
   const internalInstance = getCurrentInstance();
   if (!internalInstance) {
-    throw 'useMsal() cannot be called outside the setup() function of a component';
+    throw new Error('useMsal() cannot be called outside the setup() function of a component');
   }
   const { instance, accounts, inProgress } = toRefs(internalInstance.appContext.config.globalProperties.$msal);
 
   if (!instance.value || !accounts.value || !inProgress.value) {
-    throw 'Please install the msalPlugin';
+    throw new Error('Please install the msalPlugin');
   }
 
   if (inProgress.value === InteractionStatus.Startup) {
     instance.value.initialize().then(() => {
-      instance.value.handleRedirectPromise().catch((error) => {
+      instance.value.handleRedirectPromise().catch(() => {
         // Errors should be handled by listening to the LOGIN_FAILURE event
-        console.error(error);
-        return;
       });
     });
   }
@@ -177,7 +177,6 @@ async function callMsGraph(accessToken: string) {
   return fetch(graphConfig.graphMeEndpoint, options)
     .then((response) => response.json())
     .catch((error) => {
-      console.log(error);
       throw error;
     });
 }

@@ -24,7 +24,7 @@
   ],
   "main": "lib/index.js",
   "module": "lib/index.js",
-  "types": "lib/types.d.ts",
+  "types": "lib/index.d.ts",
   "license": "MIT",
   "scripts": {
     "build": "node build/build.js && npm run generate:types",
