@@ -108,7 +108,7 @@ export function useMsalAuthentication(
         const response = await instance.acquireTokenSilent(tokenRequest);
         result.value = response;
         error.value = null;
-      } catch (e) {
+      } catch {
         if (inProgress.value !== InteractionStatus.None) {
           return;
         }

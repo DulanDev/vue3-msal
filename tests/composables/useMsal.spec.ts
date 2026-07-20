@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { defineComponent, toRaw } from 'vue'
 import { mount, flushPromises } from '@vue/test-utils'
 import { InteractionStatus } from '@azure/msal-browser'
