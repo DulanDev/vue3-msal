@@ -34,11 +34,6 @@ export type MsalAuthenticationResult = {
   inProgress: Ref<boolean>;
 };
 
-export type MsalPluginOptions = {
-  graphEndpoint?: string;
-  defaultLoginScopes?: string[];
-};
-
 declare module 'vue' {
   interface ComponentCustomProperties {
     $msal: State;

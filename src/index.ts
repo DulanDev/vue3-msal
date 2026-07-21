@@ -13,7 +13,7 @@ import type { MsalContext, MsalAuthenticationResult } from './types';
 import { msalInstance } from './msal-config';
 import { msalPlugin } from './vue3-msal-plugin';
 
-export type { AccountIdentifiers, State, MsalContext, MsalAuthenticationResult, MsalPluginOptions } from './types';
+export type { AccountIdentifiers, State, MsalContext, MsalAuthenticationResult } from './types';
 
 // Define default login request
 const loginRequest = {

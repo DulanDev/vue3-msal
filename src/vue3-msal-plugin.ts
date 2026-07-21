@@ -3,11 +3,11 @@ import type { App, Plugin } from 'vue';
 import { EventMessageUtils, EventType, InteractionStatus, PublicClientApplication } from '@azure/msal-browser';
 import type { EventMessage } from '@azure/msal-browser';
 
-import type { MsalPluginOptions, State } from './types';
+import type { State } from './types';
 import { accountArraysAreEqual } from './helpers';
 
 export const msalPlugin: Plugin = {
-  install: (app: App, msalInstance: PublicClientApplication, _options?: MsalPluginOptions) => {
+  install: (app: App, msalInstance: PublicClientApplication) => {
     // Initializing the interaction status and accounts
     const inProgress: InteractionStatus = InteractionStatus.Startup;
     const accounts = msalInstance.getAllAccounts();
