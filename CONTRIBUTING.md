@@ -73,5 +73,3 @@ npm publish --tag latest
 git push origin main --follow-tags
 # Create a GitHub Release from the new tag, using the relevant CHANGELOG section as release notes.
 ```
-
-See [`plans/release-v1.1.0.md`](./plans/release-v1.1.0.md) for the full release checklist that was used for v1.1.0.
