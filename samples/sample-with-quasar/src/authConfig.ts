@@ -6,37 +6,41 @@ export const msalConfig = {
     clientId: import.meta.env.VITE_CLIENT_ID,
     authority: import.meta.env.VITE_ISSUER_URL,
     redirectUri: '/', // Must be registered as a SPA redirectURI on your app registration
-    postLogoutRedirectUri: '/' // Must be registered as a SPA redirectURI on your app registration
+    postLogoutRedirectUri: '/', // Must be registered as a SPA redirectURI on your app registration
   },
   cache: {
-    cacheLocation: 'localStorage'
+    cacheLocation: 'localStorage',
   },
   system: {
-      loggerOptions: {
-          loggerCallback: (level: LogLevel, message: string, containsPii: boolean) => {
-              if (containsPii) {
-                  return;
-              }
-              switch (level) {
-                  case LogLevel.Error:
-                      console.error(message);
-                      return;
-                  case LogLevel.Info:
-                      console.info(message);
-                      return;
-                  case LogLevel.Verbose:
-                      console.debug(message);
-                      return;
-                  case LogLevel.Warning:
-                      console.warn(message);
-                      return;
-                  default:
-                      return;
-              }
-          },
-          logLevel: LogLevel.Verbose
-      }
-  }
+    loggerOptions: {
+      loggerCallback: (
+        level: LogLevel,
+        message: string,
+        containsPii: boolean,
+      ) => {
+        if (containsPii) {
+          return;
+        }
+        switch (level) {
+          case LogLevel.Error:
+            console.error(message);
+            return;
+          case LogLevel.Info:
+            console.info(message);
+            return;
+          case LogLevel.Verbose:
+            console.debug(message);
+            return;
+          case LogLevel.Warning:
+            console.warn(message);
+            return;
+          default:
+            return;
+        }
+      },
+      logLevel: LogLevel.Verbose,
+    },
+  },
 };
 
 export const msalInstance = new PublicClientApplication(msalConfig);
@@ -52,5 +56,5 @@ export const graphConfig = {
 };
 
 export const azureManagementConfig = {
-  azureManagementApiEndpoint: 'https://management.azure.com'
+  azureManagementApiEndpoint: 'https://management.azure.com',
 };

@@ -1,9 +1,14 @@
-
 <p align="center">
-  <img width="280" src="https://github.com/DulanHewage/vue3-msal/assets/15976939/e5d25e77-1e05-4278-97a7-c112b4a59412" alt="Vue 3 Msal Plugin Logo">
+  <img width="280" src="https://github.com/DulanDev/vue3-msal/assets/15976939/e5d25e77-1e05-4278-97a7-c112b4a59412" alt="Vue 3 Msal Plugin Logo">
 </p>
 
 <p align="center"> Vue 3 plugin for integrating MSAL.js into your app, offering easy-to-use composables. </p>
+
+## Requirements
+
+- Node.js 20 or newer
+- Vue 3.5 or newer
+- [`@azure/msal-browser`](https://www.npmjs.com/package/@azure/msal-browser) 4 or newer
 
 ## Installation
 
@@ -13,12 +18,37 @@ To install the package, use the following npm command:
 npm i vue3-msal-plugin
 ```
 
+## Quick Start
+
+```ts
+// main.ts
+import { createApp } from 'vue';
+import { msalPlugin, msalInstance } from 'vue3-msal-plugin';
+import type { Configuration } from '@azure/msal-browser';
+import App from './App.vue';
+
+const config: Configuration = { auth: { clientId: '...', authority: '...', redirectUri: '...' } };
+const app = createApp(App);
+app.use(msalPlugin, msalInstance(config));
+app.mount('#app');
+```
+
+Then use the `useMsal` composable inside any component:
+
+```ts
+import { useMsal } from 'vue3-msal-plugin';
+
+const { instance, accounts, inProgress } = useMsal();
+```
+
+See the [Configuration](#configuration) and [Composables](#composables) sections below for the full API.
+
 ## Sample Apps
 
 You can check out the sample apps to see how to use this package.
 
-1. [Vue 3 App with Pinia](https://github.com/DulanHewage/vue3-msal/tree/main/samples/sample-with-pinia)
-2. [Quasar App](https://github.com/DulanHewage/vue3-msal/tree/main/samples/sample-with-quasar)
+1. [Vue 3 App with Pinia](https://github.com/DulanDev/vue3-msal/tree/main/samples/sample-with-pinia)
+2. [Quasar App](https://github.com/DulanDev/vue3-msal/tree/main/samples/sample-with-quasar)
 
 ## Configuration
 
@@ -72,7 +102,7 @@ newMsalInstance.addEventCallback((event) => {
     // Set the account as the active account in the MSAL instance
     newMsalInstance.setActiveAccount(account);
 
-    /* Optioanlly, You can update the user store with the account data here.
+    /* Optionally, You can update the user store with the account data here.
     'account' refers to the account data obtained from the MSAL instance.
     updateUser(account)
     */
@@ -88,7 +118,7 @@ app.use(msalPlugin, newMsalInstance);
 // Get the active account from the MSAL instance
 const activeAccount = newMsalInstance.getActiveAccount();
 if (activeAccount) {
-  /* Optioanlly, you can update the user store with the account data here.
+  /* Optionally, you can update the user store with the account data here.
     'account' refers to the account data obtained from the MSAL instance.
     updateUser(activeAccount)
     */
@@ -191,7 +221,7 @@ Please note that `useMsalAuthentication` should only be called within the setup(
 
 The `callMsGraph` function takes an access token as a parameter and returns a promise that resolves with the response data from the Microsoft Graph API.
 
-You can see an example of how to use this function in here [MyProfile.vue](https://github.com/DulanHewage/vue3-msal/blob/main/samples/sample-with-pinia/src/components/MyProfile.vue).
+You can see an example of how to use this function in here [MyProfile.vue](https://github.com/DulanDev/vue3-msal/blob/main/samples/sample-with-pinia/src/components/MyProfile.vue).
 
 ```typescript
 import { ref, watch } from 'vue';
@@ -218,6 +248,18 @@ fetchData();
 
 To obtain the access token, you can use the `result` from `useMsalAuthentication` composable.
 
+## Migration from v1.0.x
+
+v1.1.0 modernizes the build, dependency ranges, and type surface, but the documented public API and the code samples above are unchanged. To upgrade:
+
+1. Bump `@azure/msal-browser` to `^4.0.0`. See the official [MSAL.js v4 migration guide](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-browser#migrating-from-previous-msal-versions) for behavioral changes (most notable: IE11 dropped, default `navigateToLoginRequestUrl` behavior changed).
+2. Bump `vue` to `^3.5.0`.
+3. Use Node.js 20 or newer (`engines.node: ">=20"` is now enforced on install).
+
+No application code changes are needed if you are using the documented composables above. `$msal` remains available on Vue global properties for backward compatibility.
+
+See [`CHANGELOG.md`](./CHANGELOG.md) for the full list of additions, fixes, and removed items.
+
 ## Acknowledgments
 
 - [Microsoft Authentication Library for JavaScript (MSAL.js)](https://github.com/AzureAD/microsoft-authentication-library-for-js)
@@ -228,4 +270,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Dulan Hewage - dulanhewage2@hotmail.com
+Dulan Katukurundage - dulanhewage2@hotmail.com

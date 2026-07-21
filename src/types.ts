@@ -1,4 +1,4 @@
-import { InteractionStatus, PublicClientApplication } from '@azure/msal-browser';
+import type { InteractionStatus, PublicClientApplication } from '@azure/msal-browser';
 import type {
   AccountInfo,
   AuthenticationResult,
@@ -8,6 +8,7 @@ import type {
   SilentRequest,
 } from '@azure/msal-browser';
 import type { Ref } from 'vue';
+
 export type AccountIdentifiers = Partial<Pick<AccountInfo, 'homeAccountId' | 'localAccountId' | 'username'>>;
 
 export type State = {
@@ -32,10 +33,9 @@ export type MsalAuthenticationResult = {
   error: Ref<AuthError | null>;
   inProgress: Ref<boolean>;
 };
-export * from './index.ts';
 
-// declare module 'vue' {
-//   interface ComponentCustomProperties {
-//     $msal: State;
-//   }
-// }
+declare module 'vue' {
+  interface ComponentCustomProperties {
+    $msal: State;
+  }
+}

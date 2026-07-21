@@ -1,19 +1,19 @@
-import { reactive } from 'vue';
-import type { App } from 'vue';
+import { shallowReactive } from 'vue';
+import type { App, Plugin } from 'vue';
 import { EventMessageUtils, EventType, InteractionStatus, PublicClientApplication } from '@azure/msal-browser';
 import type { EventMessage } from '@azure/msal-browser';
 
-import type { State } from './types.ts';
-import { accountArraysAreEqual } from './helpers.ts';
+import type { State } from './types';
+import { accountArraysAreEqual } from './helpers';
 
-export const msalPlugin = {
+export const msalPlugin: Plugin = {
   install: (app: App, msalInstance: PublicClientApplication) => {
     // Initializing the interaction status and accounts
     const inProgress: InteractionStatus = InteractionStatus.Startup;
     const accounts = msalInstance.getAllAccounts();
 
     // Creating a reactive state
-    const state = reactive<State>({
+    const state = shallowReactive<State>({
       instance: msalInstance,
       inProgress: inProgress,
       accounts: accounts,

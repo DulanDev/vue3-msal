@@ -1,4 +1,4 @@
-import type { AccountIdentifiers } from './types.ts';
+import type { AccountIdentifiers } from './types';
 
 /**
  * Helper function to determine whether 2 arrays are equal
