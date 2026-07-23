@@ -49,6 +49,7 @@ You can check out the sample apps to see how to use this package.
 
 1. [Vue 3 App with Pinia](https://github.com/DulanDev/vue3-msal/tree/main/samples/sample-with-pinia)
 2. [Quasar App](https://github.com/DulanDev/vue3-msal/tree/main/samples/sample-with-quasar)
+3. [Nuxt App](https://github.com/DulanDev/vue3-msal/tree/main/samples/sample-with-nuxt)
 
 ## Configuration
 
