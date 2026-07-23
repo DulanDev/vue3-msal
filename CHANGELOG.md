@@ -5,6 +5,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-07-23
+
+### Fixed
+
+- `exports[\".\"].types` in `package.json` pointed to `./lib/types.d.ts` instead of `./lib/index.d.ts`, causing `has no exported member` errors for all runtime exports under modern module resolution.
+
 ## [1.1.0] - 2026-07-21
 
 ### Added

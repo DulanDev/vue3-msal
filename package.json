@@ -1,6 +1,6 @@
 {
   "name": "vue3-msal-plugin",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Vue 3 plugin for integrating MSAL.js into your app, offering easy-to-use composables.",
   "author": {
     "name": "Dulan Katukurundage",
@@ -28,7 +28,7 @@
   "types": "lib/index.d.ts",
   "exports": {
     ".": {
-      "types": "./lib/types.d.ts",
+      "types": "./lib/index.d.ts",
       "import": "./lib/index.js",
       "require": "./lib/index.cjs"
     },
