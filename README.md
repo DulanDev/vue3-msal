@@ -2,6 +2,18 @@
   <img width="280" src="https://github.com/DulanDev/vue3-msal/assets/15976939/e5d25e77-1e05-4278-97a7-c112b4a59412" alt="Vue 3 Msal Plugin Logo">
 </p>
 
+<p align="center">
+  <a href="https://www.npmjs.com/package/vue3-msal-plugin">
+    <img src="https://img.shields.io/npm/v/vue3-msal-plugin" alt="npm">
+  </a>
+  <a href="https://www.npmjs.com/package/vue3-msal-plugin">
+    <img src="https://img.shields.io/npm/dm/vue3-msal-plugin" alt="npm downloads">
+  </a>
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff" alt="TypeScript">
+  <img src="https://img.shields.io/npm/l/vue3-msal-plugin" alt="MIT">
+  <img src="https://img.shields.io/badge/node-%3E%3D20-brightgreen" alt="Node">
+</p>
+
 <p align="center"> Vue 3 plugin for integrating Microsoft Authentication Library (MSAL) into your app, offering easy-to-use composables. </p>
 
 ## Requirements
