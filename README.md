@@ -67,6 +67,8 @@ You can check out the sample apps to see how to use this package.
 
 In your main.ts file, you need to initialize the plugin with your MSAL instance.
 
+Await `initialize()` before any other MSAL call. MSAL Browser v4 only loads the `localStorage` cache during `initialize()`, so calling `getAllAccounts()` before it resolves throws `uninitialized_public_client_application` for a user who is already signed in.
+
 ```typescript
 import { createApp } from 'vue';
 
@@ -76,8 +78,6 @@ import router from './router';
 import { msalPlugin, msalInstance } from 'vue3-msal-plugin';
 import type { Configuration, AuthenticationResult } from '@azure/msal-browser';
 import { EventType } from '@azure/msal-browser';
-
-const app = createApp(App);
 
 // Define the configuration for the MSAL instance
 // For more detailed usage and other available options, please refer to the official MSAL.js documentation - https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/configuration.md
@@ -94,50 +94,59 @@ const msalConfig: Configuration = {
   },
 };
 
-// Create a new MSAL instance with the defined configuration
-const newMsalInstance = msalInstance(msalConfig);
+async function bootstrap() {
+  const app = createApp(App);
 
-// Get all accounts from the MSAL instance
-const accounts = newMsalInstance.getAllAccounts();
-if (accounts.length > 0) {
-  // If there are any accounts, set the first one as the active account
-  newMsalInstance.setActiveAccount(accounts[0]);
-}
+  // Create a new MSAL instance with the defined configuration
+  const newMsalInstance = msalInstance(msalConfig);
 
-// Add an event callback to the MSAL instance
-newMsalInstance.addEventCallback((event) => {
-  // If the event is a successful login and the event has a payload
-  if (event.eventType === EventType.LOGIN_SUCCESS && event.payload) {
-    // Cast the payload to an AuthenticationResult
-    const payload = event.payload as AuthenticationResult;
-    // Get the account from the payload
-    const account = payload.account;
-    // Set the account as the active account in the MSAL instance
-    newMsalInstance.setActiveAccount(account);
+  // MSAL Browser v4 loads the localStorage cache here, so it must finish before any other MSAL call
+  await newMsalInstance.initialize();
 
-    /* Optionally, You can update the user store with the account data here.
-    'account' refers to the account data obtained from the MSAL instance.
-    updateUser(account)
-    */
+  // Get all accounts from the MSAL instance
+  const accounts = newMsalInstance.getAllAccounts();
+  if (accounts.length > 0) {
+    // If there are any accounts, set the first one as the active account
+    newMsalInstance.setActiveAccount(accounts[0]);
   }
-});
 
-app.use(router);
+  // Add an event callback to the MSAL instance
+  newMsalInstance.addEventCallback((event) => {
+    // If the event is a successful login and the event has a payload
+    if (event.eventType === EventType.LOGIN_SUCCESS && event.payload) {
+      // Cast the payload to an AuthenticationResult
+      const payload = event.payload as AuthenticationResult;
+      // Get the account from the payload
+      const account = payload.account;
+      // Set the account as the active account in the MSAL instance
+      newMsalInstance.setActiveAccount(account);
 
-// Use the vue3-msal-plugin with the MSAL instance
-app.use(msalPlugin, newMsalInstance);
+      /* Optionally, You can update the user store with the account data here.
+      'account' refers to the account data obtained from the MSAL instance.
+      updateUser(account)
+      */
+    }
+  });
 
-// Handle page refresh
-// Get the active account from the MSAL instance
-const activeAccount = newMsalInstance.getActiveAccount();
-if (activeAccount) {
-  /* Optionally, you can update the user store with the account data here.
-    'account' refers to the account data obtained from the MSAL instance.
-    updateUser(activeAccount)
-    */
+  app.use(router);
+
+  // Use the vue3-msal-plugin with the MSAL instance
+  app.use(msalPlugin, newMsalInstance);
+
+  // Handle page refresh
+  // Get the active account from the MSAL instance
+  const activeAccount = newMsalInstance.getActiveAccount();
+  if (activeAccount) {
+    /* Optionally, you can update the user store with the account data here.
+      'account' refers to the account data obtained from the MSAL instance.
+      updateUser(activeAccount)
+      */
+  }
+
+  app.mount('#app');
 }
 
-app.mount('#app');
+bootstrap();
 ```
 
 ## Composables
