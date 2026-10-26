@@ -72,6 +72,8 @@ module.exports = configure(function (/* ctx */) {
             },
             eslint: {
               lintCommand: 'eslint "./**/*.{js,ts,mjs,cjs,vue}"',
+              // Read eslint.config.mjs in dev; without this the checker only looks for .eslintrc files
+              useFlatConfig: true,
             },
           },
           { server: false },
