@@ -1,5 +1,5 @@
 import { boot } from 'quasar/wrappers';
-import { msalPlugin, msalInstance } from 'vue3-msal-plugin/lib';
+import { msalPlugin, msalInstance } from 'vue3-msal-plugin';
 import type { AuthenticationResult } from '@azure/msal-browser';
 import { EventType } from '@azure/msal-browser';
 import { msalConfig } from 'src/authConfig';
@@ -9,6 +9,8 @@ import { msalConfig } from 'src/authConfig';
 export default boot(async ({ app }) => {
   // Create a new MSAL instance with the defined configuration
   const newMsalInstance = msalInstance(msalConfig);
+  // MSAL Browser v4 loads the localStorage cache here, so it must finish before any other MSAL call
+  await newMsalInstance.initialize();
   // Get all accounts from the MSAL instance
   const accounts = newMsalInstance.getAllAccounts();
   if (accounts.length > 0) {

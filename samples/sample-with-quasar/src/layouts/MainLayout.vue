@@ -42,7 +42,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useIsAuthenticated, useMsal } from 'vue3-msal-plugin/lib';
+import { useIsAuthenticated, useMsal } from 'vue3-msal-plugin';
 
 const { instance, accounts, inProgress, loginRequest } = useMsal();
 

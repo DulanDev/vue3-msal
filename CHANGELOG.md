@@ -5,6 +5,13 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- `msalPlugin` no longer throws `uninitialized_public_client_application` when installed before `initialize()` resolves. With `cacheLocation: 'localStorage'`, MSAL Browser v4 only loads the encrypted cache during `initialize()`, so reading accounts earlier threw for returning users on every page refresh. The plugin now starts with an empty account list and syncs it once `initialize()` resolves.
+- README Configuration example, Pinia sample, and Quasar sample now await `instance.initialize()` before reading accounts or installing the plugin.
+
 ## [1.1.1] - 2026-07-23
 
 ### Fixed

@@ -1,26 +1,65 @@
 import { shallowReactive } from 'vue';
 import type { App, Plugin } from 'vue';
-import { EventMessageUtils, EventType, InteractionStatus, PublicClientApplication } from '@azure/msal-browser';
-import type { EventMessage } from '@azure/msal-browser';
+import {
+  BrowserAuthError,
+  BrowserAuthErrorCodes,
+  EventMessageUtils,
+  EventType,
+  InteractionStatus,
+  PublicClientApplication,
+} from '@azure/msal-browser';
+import type { AccountInfo, EventMessage } from '@azure/msal-browser';
 
 import type { State } from './types';
 import { accountArraysAreEqual } from './helpers';
+
+/**
+ * Reads the cached accounts, or returns null if the MSAL instance is not initialized yet.
+ * MSAL Browser v4 only loads the localStorage cache during initialize(), so reading it
+ * earlier throws for a returning user.
+ * @param msalInstance
+ */
+function readAccounts(msalInstance: PublicClientApplication): AccountInfo[] | null {
+  try {
+    return msalInstance.getAllAccounts();
+  } catch (e) {
+    if (e instanceof BrowserAuthError && e.errorCode === BrowserAuthErrorCodes.uninitializedPublicClientApplication) {
+      return null;
+    }
+    throw e;
+  }
+}
 
 export const msalPlugin: Plugin = {
   install: (app: App, msalInstance: PublicClientApplication) => {
     // Initializing the interaction status and accounts
     const inProgress: InteractionStatus = InteractionStatus.Startup;
-    const accounts = msalInstance.getAllAccounts();
+    const accounts = readAccounts(msalInstance);
 
     // Creating a reactive state
     const state = shallowReactive<State>({
       instance: msalInstance,
       inProgress: inProgress,
-      accounts: accounts,
+      accounts: accounts ?? [],
     });
 
     // Adding the state to the global properties of the Vue app
     app.config.globalProperties.$msal = state;
+
+    // The instance was installed before initialize() resolved, so sync the accounts once it has
+    if (accounts === null) {
+      msalInstance
+        .initialize()
+        .then(() => {
+          const currentAccounts = msalInstance.getAllAccounts();
+          if (!accountArraysAreEqual(currentAccounts, state.accounts)) {
+            state.accounts = currentAccounts;
+          }
+        })
+        .catch(() => {
+          // Initialization errors surface again when useMsal() calls initialize()
+        });
+    }
 
     // Adding an event callback to the MSAL instance
     msalInstance.addEventCallback((message: EventMessage) => {
