@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { defineComponent, toRaw } from 'vue';
 import { mount, flushPromises } from '@vue/test-utils';
-import { EventType, InteractionStatus } from '@azure/msal-browser';
+import { BrowserAuthError, BrowserAuthErrorCodes, EventType, InteractionStatus } from '@azure/msal-browser';
 
 import { msalPlugin } from '../src/vue3-msal-plugin';
 import { msalInstance } from '../src/msal-config';
@@ -74,5 +74,65 @@ describe('msalPlugin.install — regression (v1.0.6 behavior)', () => {
     await flushPromises();
     expect(instance.addEventCallback).toHaveBeenCalledTimes(1);
     expect(typeof instance._eventCallback).toBe('function');
+  });
+});
+
+describe('msalPlugin.install — before initialize() resolves', () => {
+  const uninitialized = () =>
+    new BrowserAuthError(BrowserAuthErrorCodes.uninitializedPublicClientApplication);
+
+  it('does not throw and starts with an empty account list', async () => {
+    const instance = makeInstance();
+    instance.getAllAccounts.mockImplementation(() => {
+      throw uninitialized();
+    });
+    instance.initialize = vi.fn(() => new Promise(() => {}));
+    const Test = defineComponent({ setup: () => ({}), template: '<div></div>' });
+
+    const wrapper = mount(Test, { global: { plugins: [[msalPlugin, instance]] } });
+    await flushPromises();
+
+    expect(wrapper.vm.$msal.accounts).toEqual([]);
+  });
+
+  it('syncs the cached accounts once initialize() resolves', async () => {
+    const instance = makeInstance();
+    const account = { homeAccountId: 'h1', localAccountId: 'l1', username: 'u@example.com' };
+    let initialized = false;
+    instance.getAllAccounts.mockImplementation(() => {
+      if (!initialized) throw uninitialized();
+      return [account];
+    });
+    instance.initialize = vi.fn(() => {
+      initialized = true;
+      return Promise.resolve();
+    });
+    const Test = defineComponent({ setup: () => ({}), template: '<div></div>' });
+
+    const wrapper = mount(Test, { global: { plugins: [[msalPlugin, instance]] } });
+    await flushPromises();
+
+    expect(instance.initialize).toHaveBeenCalledTimes(1);
+    expect(wrapper.vm.$msal.accounts).toHaveLength(1);
+    expect(wrapper.vm.$msal.accounts[0].username).toBe('u@example.com');
+  });
+
+  it('does not call initialize() when the accounts were readable at install', async () => {
+    const instance = makeInstance();
+    const Test = defineComponent({ setup: () => ({}), template: '<div></div>' });
+    mount(Test, { global: { plugins: [[msalPlugin, instance]] } });
+    await flushPromises();
+
+    expect(instance.initialize).not.toHaveBeenCalled();
+  });
+
+  it('rethrows errors other than uninitialized_public_client_application', () => {
+    const instance = makeInstance();
+    instance.getAllAccounts.mockImplementation(() => {
+      throw new Error('boom');
+    });
+    const Test = defineComponent({ setup: () => ({}), template: '<div></div>' });
+
+    expect(() => mount(Test, { global: { plugins: [[msalPlugin, instance]] } })).toThrow('boom');
   });
 });
