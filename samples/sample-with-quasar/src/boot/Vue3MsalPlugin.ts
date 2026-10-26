@@ -1,5 +1,5 @@
 import { boot } from 'quasar/wrappers';
-import { msalPlugin, msalInstance } from 'vue3-msal-plugin/lib';
+import { msalPlugin, msalInstance } from 'vue3-msal-plugin';
 import type { AuthenticationResult } from '@azure/msal-browser';
 import { EventType } from '@azure/msal-browser';
 import { msalConfig } from 'src/authConfig';
